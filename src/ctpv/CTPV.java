@@ -25,6 +25,7 @@ public class CTPV extends javax.swing.JFrame {
         initComponents();
 	ventanasInternas = new HashMap<Long, VentanaInterna>();
         new HiloEscuchador(this).start();
+        setExtendedState(this.MAXIMIZED_BOTH);
     }
 
     /**
@@ -113,6 +114,7 @@ public class CTPV extends javax.swing.JFrame {
 		jDesktopPane1.remove(ventanasInternas.get(id));
                 repaint();
                 pack();
+                setExtendedState(this.MAXIMIZED_BOTH);
 	}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
