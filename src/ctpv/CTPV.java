@@ -7,6 +7,7 @@
 package ctpv;
 
 import java.util.HashMap;
+import javax.swing.JOptionPane;
 import server.VentanaCliente;
 
 /**
@@ -41,6 +42,7 @@ public class CTPV extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("CTPV");
+        setExtendedState(1);
         setMinimumSize(new java.awt.Dimension(820, 608));
 
         jDesktopPane1.setBackground(new java.awt.Color(240, 240, 240));
@@ -109,12 +111,12 @@ public class CTPV extends javax.swing.JFrame {
 		jDesktopPane1.add(cliente);
 	}
 	
-	public void removerVentana(long id){
-		//VentanaInterna cliente = ventanasInternas.get(id);
+	public void removerVentana(long id){		
 		jDesktopPane1.remove(ventanasInternas.get(id));
-                repaint();
-                pack();
+                repaint();                
                 setExtendedState(this.MAXIMIZED_BOTH);
+                JOptionPane.showMessageDialog(this, "Cliente Servido");
+                
 	}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
