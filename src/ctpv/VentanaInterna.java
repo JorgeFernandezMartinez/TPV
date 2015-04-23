@@ -23,7 +23,13 @@ public class VentanaInterna extends javax.swing.JInternalFrame implements Runnab
     public VentanaInterna() {
         initComponents();
     }
-    
+    /* Actualiza la ventana
+    public void actualizarVentana() {
+        
+        jLabel1.setText("");        
+        repaint();
+    }
+    */
     
     /**
      * This method is called from within the constructor to initialize the form.
