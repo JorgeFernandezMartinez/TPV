@@ -64,18 +64,20 @@ public class TPVJFrame extends JFrame {
         crearVentana();
         setVisible(true);
         try {
+            
             Socket cliente = new Socket("127.0.0.1", PUERTO);
             System.out.println("Conexion establecida");
             InformacionTPV informacionTPV = new InformacionTPV(ID, true);
             ObjectOutputStream oos = new ObjectOutputStream(cliente.getOutputStream());
             oos.writeObject(informacionTPV);
             cliente.close();
+            
         } catch (IOException ex) {
             Logger.getLogger(TPVJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    //----------METODOS
+    //----------METODOS-------------
     /**
      * Crea la ventana de la aplicación
      */
@@ -116,6 +118,7 @@ public class TPVJFrame extends JFrame {
      * zona norte del BorderLayout del JFrame
      */
     private void crearEncabezado() {
+        
         JPanel jPanelEncabezado = new JPanel(new BorderLayout());
         jPanelEncabezado.setBackground(AZUL_CLARO);
         jPanelEncabezado.setBorder(new LineBorder(AZUL_OSCURO));
@@ -130,6 +133,7 @@ public class TPVJFrame extends JFrame {
         jButtonAyuda.setIconTextGap(-3);
         jButtonAyuda.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButtonAyuda.setIcon(new ImageIcon("..\\TPV\\src\\imagenes\\Menus\\Ayuda2.png"));
+        
         jButtonAyuda.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
@@ -137,6 +141,8 @@ public class TPVJFrame extends JFrame {
                         "Ayuda", JOptionPane.INFORMATION_MESSAGE);
             }
         });;
+        
+        
         jPanelIzquierdo.add(jButtonAyuda);
 
         JButton jButtonSalir = new JButton("Salir");
@@ -146,6 +152,7 @@ public class TPVJFrame extends JFrame {
         jButtonSalir.setIconTextGap(-3);
         jButtonSalir.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButtonSalir.setIcon(new ImageIcon("..\\TPV\\src\\imagenes\\Menus\\Salir2.png"));
+        
         jButtonSalir.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {

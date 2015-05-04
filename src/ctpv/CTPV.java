@@ -12,19 +12,21 @@ import server.VentanaCliente;
 
 /**
  *
- * @author Alejandro
+ * @author Jorge
  */
 public class CTPV extends javax.swing.JFrame {
-
     
     private server.HiloEscuchador escuchador;
     private HashMap<Long, VentanaInterna> ventanasInternas;
+    private int contador;
+    
     /**
      * Creates new form CTPV
      */
-    public CTPV() {
-        initComponents();
-	ventanasInternas = new HashMap<Long, VentanaInterna>();
+    public CTPV() {        
+        contador = 1;
+        initComponents();        
+	ventanasInternas = new HashMap<Long, VentanaInterna>(contador);
         new HiloEscuchador(this).start();
         setExtendedState(this.MAXIMIZED_BOTH);
     }
@@ -104,14 +106,15 @@ public class CTPV extends javax.swing.JFrame {
         });
     }
     public void añadirVentana(long id){
-		VentanaInterna cliente = new VentanaInterna();
+		VentanaInterna cliente = new VentanaInterna(contador);
 		ventanasInternas.put(id, cliente);
 		cliente.setLocation(50, 26);
 		cliente.setVisible(true);
 		jDesktopPane1.add(cliente);
+                contador++;
 	}
 	
-	public void removerVentana(long id){		
+    public void removerVentana(long id){		
 		jDesktopPane1.remove(ventanasInternas.get(id));
                 repaint();                
                 setExtendedState(this.MAXIMIZED_BOTH);

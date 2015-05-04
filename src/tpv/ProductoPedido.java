@@ -49,8 +49,10 @@ public class ProductoPedido {
      * @return Un array formado por el nombre, la cantidad y el sub-total
      */
     public String[] getProducto() {
+        
         String[] producto = {nombre, "" + cantidad, redondear(cantidad * precio)};
         return producto;
+        
     }
     
     /**
@@ -62,9 +64,11 @@ public class ProductoPedido {
     }
     
     public String redondear(float num){
+        
       String val = num +"";
       BigDecimal big = new BigDecimal(val);
       big = big.setScale(2, RoundingMode.HALF_UP);
       return "" + big;
+      
     }
 }

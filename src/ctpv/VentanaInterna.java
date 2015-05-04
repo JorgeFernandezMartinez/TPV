@@ -11,17 +11,20 @@ import javax.swing.JFrame;
 
 /**
  *
- * @author Alejandro
+ * @author Jorge
  */
 public class VentanaInterna extends javax.swing.JInternalFrame implements Runnable{
 
     public JFrame ventana;
     public Socket conexion;
+    public int contador;
     /**
      * Creates new form VentanaInterna
      */
-    public VentanaInterna() {
+    public VentanaInterna(int contador) {    
+        this.contador = contador;
         initComponents();
+        this.setTitle("Terminal TPV " + contador);
     }
     /* Actualiza la ventana
     public void actualizarVentana() {
