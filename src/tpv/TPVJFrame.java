@@ -14,6 +14,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -51,10 +53,13 @@ public class TPVJFrame extends JFrame {
     private HashMap<String, ProductoPedido> listaPedidos; // Aqui se almacenan los productos pedidos
     private JPanel jPanelListaProductos; // Panel donde van apareciendo los productos de las distintas familias
     private JTable tabla;
+    
     //----Campos para el servidor
     private static final int PUERTO = 2000;
+    private int puerto2 = 3000;
     private long ID = System.currentTimeMillis();
-
+    private Socket cliente;
+    private ObjectOutputStream oos;
     //---------- CONSTRUCTOR
     /**
      * Crea una vista del TPV, iniciando toddos sus componentes.
@@ -64,20 +69,18 @@ public class TPVJFrame extends JFrame {
         crearVentana();
         setVisible(true);
         try {
-            
-            Socket cliente = new Socket("127.0.0.1", PUERTO);
+            cliente = new Socket("127.0.0.1", PUERTO);
             System.out.println("Conexion establecida");
-            InformacionTPV informacionTPV = new InformacionTPV(ID, true);
-            ObjectOutputStream oos = new ObjectOutputStream(cliente.getOutputStream());
+            InformacionTPV informacionTPV = new InformacionTPV(ID, 1);
+            oos = new ObjectOutputStream(cliente.getOutputStream());
             oos.writeObject(informacionTPV);
-            cliente.close();
-            
+            //cliente.close();
         } catch (IOException ex) {
             Logger.getLogger(TPVJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    //----------METODOS-------------
+    //----------METODOS
     /**
      * Crea la ventana de la aplicación
      */
@@ -98,10 +101,10 @@ public class TPVJFrame extends JFrame {
     }
 
     private void cerrarVentanaInterna() {
-        InformacionTPV informacionTPV = new InformacionTPV(ID, false);
-        ObjectOutputStream oos;
+        InformacionTPV informacionTPV = new InformacionTPV(ID, 0);
+        //ObjectOutputStream oos;
         try {
-            Socket cliente = new Socket("127.0.0.1", PUERTO);
+            cliente = new Socket("127.0.0.1", PUERTO);
             oos = new ObjectOutputStream(cliente.getOutputStream());
             oos.writeObject(informacionTPV);
             cliente.close();
@@ -118,7 +121,6 @@ public class TPVJFrame extends JFrame {
      * zona norte del BorderLayout del JFrame
      */
     private void crearEncabezado() {
-        
         JPanel jPanelEncabezado = new JPanel(new BorderLayout());
         jPanelEncabezado.setBackground(AZUL_CLARO);
         jPanelEncabezado.setBorder(new LineBorder(AZUL_OSCURO));
@@ -133,7 +135,6 @@ public class TPVJFrame extends JFrame {
         jButtonAyuda.setIconTextGap(-3);
         jButtonAyuda.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButtonAyuda.setIcon(new ImageIcon("..\\TPV\\src\\imagenes\\Menus\\Ayuda2.png"));
-        
         jButtonAyuda.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
@@ -141,8 +142,6 @@ public class TPVJFrame extends JFrame {
                         "Ayuda", JOptionPane.INFORMATION_MESSAGE);
             }
         });;
-        
-        
         jPanelIzquierdo.add(jButtonAyuda);
 
         JButton jButtonSalir = new JButton("Salir");
@@ -152,7 +151,6 @@ public class TPVJFrame extends JFrame {
         jButtonSalir.setIconTextGap(-3);
         jButtonSalir.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButtonSalir.setIcon(new ImageIcon("..\\TPV\\src\\imagenes\\Menus\\Salir2.png"));
-        
         jButtonSalir.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
@@ -377,12 +375,25 @@ public class TPVJFrame extends JFrame {
         BigDecimal big = new BigDecimal(val);
         big = big.setScale(2, RoundingMode.HALF_UP);
         jLabelTotal.setText("" + big);
+        enviarInformacion(big);
+    }
+
+    private void enviarInformacion(BigDecimal big) {
+        try {
+            InformacionTPV informacionTPV = new InformacionTPV(ID, 2, listaPedidos, big);
+            cliente = new Socket("127.0.0.1", PUERTO);
+            oos = new ObjectOutputStream(cliente.getOutputStream());
+            oos.writeObject(informacionTPV);
+        } catch (IOException ex) {
+            Logger.getLogger(TPVJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error");
+        }
     }
 
     private void eliminar() {
-        int[] indices = tabla.getSelectedRows();
-        for (int i = 0; i < indices.length; i++) {
-            listaPedidos.remove((String) modeloTabla.getValueAt(indices[i], 0));
+        int [] eliminar = tabla.getSelectedRows();
+        for (int i = 0; i < eliminar.length; i++) {
+            listaPedidos.remove((String) modeloTabla.getValueAt(eliminar[i], 0));
         }
         actualizarTabla();
         actualizarTotal();
@@ -391,7 +402,7 @@ public class TPVJFrame extends JFrame {
     private void crearCalculadora() {
         Calculadora calculadora = new Calculadora(this);
     }
-
+    
     public static void main(String[] args) {
         TPVJFrame ventana = new TPVJFrame();
     }

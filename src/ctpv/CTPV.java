@@ -6,9 +6,22 @@
 
 package ctpv;
 
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import server.VentanaCliente;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import tpv.ProductoPedido;
 
 /**
  *
@@ -16,19 +29,41 @@ import server.VentanaCliente;
  */
 public class CTPV extends javax.swing.JFrame {
     
-    private server.HiloEscuchador escuchador;
+    private static final int NUM_CLIENTES = 6;
+    private int contadorVentanas = 0;
+    private int contadorTPV = 1;
+    
+    private HiloEscuchador escuchador;
     private HashMap<Long, VentanaInterna> ventanasInternas;
-    private int contador;
+    File archivo;
+    FileWriter fw;
+    BufferedWriter fichero;
     
     /**
      * Creates new form CTPV
      */
-    public CTPV() {        
-        contador = 1;
-        initComponents();        
-	ventanasInternas = new HashMap<Long, VentanaInterna>(contador);
-        new HiloEscuchador(this).start();
-        setExtendedState(this.MAXIMIZED_BOTH);
+    public CTPV() {
+        try {
+            initComponents();
+            //setIconImage(new ImageIcon(getClass().getResource("/ctpv/icono.png")).getImage());
+            ventanasInternas = new HashMap<Long, VentanaInterna>();
+            new HiloEscuchador(this).start();
+            archivo = new File("Ventas.txt");
+            fw = new FileWriter(archivo);
+            fichero = new BufferedWriter(fw);
+            addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                try {
+                    fichero.close();
+                    fw.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(CTPV.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+        } catch (IOException ex) {
+            Logger.getLogger(CTPV.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -44,7 +79,7 @@ public class CTPV extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("CTPV");
-        setExtendedState(1);
+        setExtendedState(MAXIMIZED_BOTH);
         setMinimumSize(new java.awt.Dimension(820, 608));
 
         jDesktopPane1.setBackground(new java.awt.Color(240, 240, 240));
@@ -56,14 +91,14 @@ public class CTPV extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jDesktopPane1)
+                .addComponent(jDesktopPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jDesktopPane1)
+                .addComponent(jDesktopPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -106,22 +141,50 @@ public class CTPV extends javax.swing.JFrame {
         });
     }
     public void añadirVentana(long id){
-		VentanaInterna cliente = new VentanaInterna(contador);
+		VentanaInterna cliente = new VentanaInterna(contadorVentanas);
 		ventanasInternas.put(id, cliente);
 		cliente.setLocation(50, 26);
 		cliente.setVisible(true);
 		jDesktopPane1.add(cliente);
-                contador++;
-	}
+                contadorVentanas++;
+                contadorTPV++;
+    }
 	
-    public void removerVentana(long id){		
-		jDesktopPane1.remove(ventanasInternas.get(id));
-                repaint();                
-                setExtendedState(this.MAXIMIZED_BOTH);
-                JOptionPane.showMessageDialog(this, "Cliente Servido");
-                
-	}
+    public void removerVentana(long id){
+        try{
+            VentanaInterna cliente = ventanasInternas.get(id);
+            DefaultTableModel tabla = (DefaultTableModel) cliente.getjTable1().getModel();
+            fichero.append(cliente.getTitle() + "\n");
+            for (int i = 0; i < tabla.getRowCount(); i++) {
+                String lineaPedido = "";
+                for (int j = 0; j < tabla.getColumnCount(); j++) {
+                    lineaPedido += tabla.getValueAt(i, j);
+                }
+                fichero.append(lineaPedido + "\n");
+            }
+            fichero.append("\n");
+            jDesktopPane1.remove(cliente);
+            JOptionPane.showMessageDialog(null, "Cliente servido.");
+            repaint();
+            contadorTPV--;
+        }catch (NullPointerException e) {
+        } catch (IOException ex) {
+            Logger.getLogger(CTPV.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public VentanaInterna getVentanaInterna(long id){
+        return ventanasInternas.get(id);
+    }
+    
+    public int getContadorTPV() {
+        return contadorTPV;
+    }
 
+    public int getContadorVentanas() {
+        return contadorVentanas;
+    }
+        
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDesktopPane jDesktopPane1;
     // End of variables declaration//GEN-END:variables
