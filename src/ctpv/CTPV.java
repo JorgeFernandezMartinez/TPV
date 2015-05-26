@@ -135,7 +135,7 @@ public class CTPV extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
+            public synchronized void run() {
                 new CTPV().setVisible(true);
             }
         });
