@@ -47,7 +47,7 @@ public class CTPV extends javax.swing.JFrame {
     public CTPV() {
         try {
             initComponents();
-            //setIconImage(new ImageIcon(getClass().getResource("/iconos/icono.png")).getImage());
+            setIconImage(new ImageIcon(getClass().getResource("/icono/icono.png")).getImage());
             ventanasInternas = new HashMap<Long, VentanaInterna>();
             new HiloEscuchador(this).start();
             archivo = new File("Ventas.txt");

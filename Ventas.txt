@@ -11,3 +11,10 @@ TPV 1
 hora: 18:00:24
 Chivas Regal831.20
 
+TPV 1
+27/may/15
+hora: 18:12:07
+Brugal13.30
+JB13.50
+Chivas Regal27.80
+
