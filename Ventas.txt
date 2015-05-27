@@ -1,10 +1,13 @@
-TPV 2
+TPV 1
 27/may/15
-hora: 13:24:17
+hora: 17:28:19
+Jack Daniels27.20
+Larios26.80
+JB27.00
+Chivas Regal623.40
 
 TPV 1
 27/may/15
-hora: 15:36:05
-Larios13.40
-JB27.00
+hora: 18:00:24
+Chivas Regal831.20
 
