@@ -13,6 +13,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,7 +32,7 @@ import tpv.ProductoPedido;
 public class CTPV extends javax.swing.JFrame {
     
     private static final int NUM_CLIENTES = 6;
-    private int contadorVentanas = 0;
+    private int contadorVentanas = 1;
     private int contadorTPV = 1;
     
     private HiloEscuchador escuchador;
@@ -45,11 +47,11 @@ public class CTPV extends javax.swing.JFrame {
     public CTPV() {
         try {
             initComponents();
-            //setIconImage(new ImageIcon(getClass().getResource("/ctpv/icono.png")).getImage());
+            //setIconImage(new ImageIcon(getClass().getResource("/iconos/icono.png")).getImage());
             ventanasInternas = new HashMap<Long, VentanaInterna>();
             new HiloEscuchador(this).start();
             archivo = new File("Ventas.txt");
-            fw = new FileWriter(archivo);
+            fw = new FileWriter(archivo, true);
             fichero = new BufferedWriter(fw);
             addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -135,7 +137,7 @@ public class CTPV extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
-            public synchronized void run() {
+            public void run() {
                 new CTPV().setVisible(true);
             }
         });
@@ -152,27 +154,35 @@ public class CTPV extends javax.swing.JFrame {
 	
     public void removerVentana(long id){
         try{
+            Date now = new Date();
+            SimpleDateFormat format = new SimpleDateFormat("dd/MMM/yy");  
+            SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");            
+            
             VentanaInterna cliente = ventanasInternas.get(id);
             DefaultTableModel tabla = (DefaultTableModel) cliente.getjTable1().getModel();
-            fichero.append(cliente.getTitle() + "\n");
+            fichero.append(cliente.getTitle() + "\r\n" + format.format(now) + "\r\n" + "hora: " + format1.format(now) + "\r\n");
+            
             for (int i = 0; i < tabla.getRowCount(); i++) {
                 String lineaPedido = "";
                 for (int j = 0; j < tabla.getColumnCount(); j++) {
                     lineaPedido += tabla.getValueAt(i, j);
                 }
-                fichero.append(lineaPedido + "\n");
+                fichero.append(lineaPedido + "\r\n");
             }
-            fichero.append("\n");
+            fichero.append("\r\n");
+            
             jDesktopPane1.remove(cliente);
             JOptionPane.showMessageDialog(null, "Cliente servido.");
             repaint();
             contadorTPV--;
+            fichero.close();
         }catch (NullPointerException e) {
         } catch (IOException ex) {
             Logger.getLogger(CTPV.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
+        
     public VentanaInterna getVentanaInterna(long id){
         return ventanasInternas.get(id);
     }

@@ -1,17 +1,21 @@
-package comunicacion;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ctpv;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashMap;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 import tpv.ProductoPedido;
+
 /**
  *
- * @author Jorge
+ * @author PC
  */
 public class InformacionTPV implements Serializable {
-	private long id;
+    private long id;
 	private int estado;
         private HashMap<String, ProductoPedido> listaPedidos;
         private BigDecimal big;
@@ -44,6 +48,4 @@ public class InformacionTPV implements Serializable {
     public HashMap<String, ProductoPedido> getListaPedidos() {
         return listaPedidos;
     }
-	
-	
 }

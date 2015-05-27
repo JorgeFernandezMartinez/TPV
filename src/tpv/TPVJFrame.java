@@ -5,7 +5,7 @@
  */
 package tpv;
 
-import comunicacion.InformacionTPV;
+import ctpv.InformacionTPV;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -73,8 +73,7 @@ public class TPVJFrame extends JFrame {
             System.out.println("Conexion establecida");
             InformacionTPV informacionTPV = new InformacionTPV(ID, 1);
             oos = new ObjectOutputStream(cliente.getOutputStream());
-            oos.writeObject(informacionTPV);
-            //cliente.close();
+            oos.writeObject(informacionTPV);            
         } catch (IOException ex) {
             Logger.getLogger(TPVJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -102,17 +101,16 @@ public class TPVJFrame extends JFrame {
 
     private void cerrarVentanaInterna() {
         InformacionTPV informacionTPV = new InformacionTPV(ID, 0);
-        //ObjectOutputStream oos;
+        
         try {
             cliente = new Socket("127.0.0.1", PUERTO);
             oos = new ObjectOutputStream(cliente.getOutputStream());
             oos.writeObject(informacionTPV);
             cliente.close();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
+        } catch (IOException e) {            
             e.printStackTrace();
         }
-        System.out.println("Cliente cerrado");
+        //System.out.println("Cliente cerrado");
         System.exit(0);
     }
 
